@@ -199,7 +199,7 @@ static void scroll_decay_callback(struct k_work *work) {
         k_mutex_unlock(&data->lock);
 
         zmk_hid_mouse_scroll_set(0, 0);
-        zmk_endpoint_send_mouse_report();
+        zmk_endpoints_send_mouse_report();
         LOG_DBG("Scroll Inertia cancelled while Ctrl is pressed.");
         return;
     }
