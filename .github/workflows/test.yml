@@ -1,0 +1,32 @@
+# Copyright (c) 2026 amgskobo
+# SPDX-License-Identifier: MIT
+
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    # Recheck moving upstream and DYA main branches even without local changes.
+    - cron: '7 2 * * 1'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: test-${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  core:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - name: Run fixed-point and frame contract tests
+        run: bash ./tests/run-docker.sh
+      - name: Build against upstream ZMK
+        run: bash ./tests/run-integration-docker.sh
